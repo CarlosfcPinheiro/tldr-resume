@@ -16,6 +16,9 @@ async def root():
 
 @app.post("/summarize")
 async def summarize(dialogue_data: Dialogue):
-    summarizer = Summarizer()
-    summary = summarizer.summarize_dialogue(dialogue_data.text)
-    return {"summary": summary}
+    try:
+        summarizer = Summarizer()
+        summary = summarizer.summarize_dialogue(dialogue_data.text)
+        return {"summary": summary}
+    except Exception as e:
+        return {"error": str(e)}
