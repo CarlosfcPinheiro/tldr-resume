@@ -1,3 +1,3 @@
-# Dialogue resume
+# TLDR resume
 
-Dialogue resume with LLM
+Summarize and extract the main information in a text.
