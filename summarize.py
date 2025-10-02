@@ -24,15 +24,28 @@ class Summarizer:
             raise ValueError("Input text must be at least 30 words long")
         
         result = self.model.generate_content(
-            f"Summarize the following text in a concise manner:\n\n{text}"
+            f"""Summarize the following text in a concise manner. You need to return ONLY  a JSON in this form: 
+                {{
+                    "summary": "Concise summary of the text",
+                    "title": "A short and catchy title for the summary",
+                    "content_classification": "only use capitalized single words"
+                }}
+            
+            This is the text: \n\n{text}"""
         )
+        repaired_json = repair_json(result.text)
+        summary = json.loads(repaired_json)
+
         words_count_before = len(text.split())
-        words_count_after = len(result.text.split())
+        words_count_after = len(summary['summary'].split())
+
         print(result)
 
-        return {"summary": result.text, "words_count_before": words_count_before, "words_count_after": words_count_after}
-    
+        return {"result": summary, "words_count_before": words_count_before, "words_count_after": words_count_after}
+
     def entity_extraction(self, text: str) -> str:
+        if (len(text.split()) < 30):
+            raise ValueError("Input text must be at least 30 words long")
         result = self.model.generate_content(
             f"""Extract key entities from the following text, you need to return ONLY a JSON array of entities in this form:
             [

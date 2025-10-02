@@ -1,13 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from fastapi.responses import JSONResponse
 
 from summarize import Summarizer
 
 # Instance fastAPI application
-app = FastAPI()
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight": {"theme": "obsidian"}})
 
-# Pydantic model for request body, extending from BaseModel
+# Pydantic models for request body, extending from BaseModel
 class Text(BaseModel):
     text: str
 
@@ -22,7 +21,7 @@ async def summarize(text_data: Text):
         data = summarizer.summarize_dialogue(text_data.text)
         return {"data": data, "success": True}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e), success=False)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/extract_entities")
 async def extract_entities(text_data: Text):
@@ -32,4 +31,4 @@ async def extract_entities(text_data: Text):
 
         return {"data": data, "success": True}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e), success=False)
+        raise HTTPException(status_code=500, detail=str(e))
